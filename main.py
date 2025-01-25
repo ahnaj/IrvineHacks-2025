@@ -183,7 +183,17 @@ while running:
                 minimized = True
                 pygame.display.iconify()
                 threading.Thread(target=run_tray, daemon=True).start()
-
+            if event.key == pygame.K_l:
+                stand_img = pygame.image.load("pet_assets/lebronhappy.png")
+                walk1_left_img = pygame.image.load("pet_assets/lebronhappy.png")
+                walk2_left_img = pygame.image.load("pet_assets/lebronhappy.png")
+                walk1_right_img = pygame.image.load("pet_assets/lebronhappy.png")
+                walk2_right_img = pygame.image.load("pet_assets/lebronhappy.png")
+                stand_img = resize_to_aspect_ratio(stand_img, image_width, image_height)
+                walk1_left_img = resize_to_aspect_ratio(walk1_left_img, image_width, image_height)
+                walk2_left_img = resize_to_aspect_ratio(walk2_left_img, image_width, image_height)
+                walk1_right_img = resize_to_aspect_ratio(walk1_right_img, image_width, image_height)
+                walk2_right_img = resize_to_aspect_ratio(walk2_right_img, image_width, image_height)
             if input_active:
                 if event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
