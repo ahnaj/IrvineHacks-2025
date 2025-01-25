@@ -64,20 +64,7 @@ def connect_to_canvas(api_key):
     except Exception as e:
         print(f"Failed to connect: {e}")
         return False
-
-pygame.init()
-
-stand_img = pygame.image.load("pet_assets/stand.png")
-walk1_left_img = pygame.image.load("pet_assets/walk1_left.png")
-walk2_left_img = pygame.image.load("pet_assets/walk2_left.png")
-walk1_right_img = pygame.image.load("pet_assets/walk1_right.png")
-walk2_right_img = pygame.image.load("pet_assets/walk2_right.png")
-
-pixel_font = pygame.font.Font("PressStart2P.ttf", 20)
-
-screen_width, screen_height = 400, 400
-image_width, image_height = int(screen_width * 0.25), int(screen_height * 0.25)
-
+    
 def resize_to_aspect_ratio(img, width, height):
     img_rect = img.get_rect()
     aspect_ratio = img_rect.width / img_rect.height
@@ -89,11 +76,35 @@ def resize_to_aspect_ratio(img, width, height):
         new_width = int(new_height * aspect_ratio)
     return pygame.transform.scale(img, (new_width, new_height))
 
-stand_img = resize_to_aspect_ratio(stand_img, image_width, image_height)
-walk1_left_img = resize_to_aspect_ratio(walk1_left_img, image_width, image_height)
-walk2_left_img = resize_to_aspect_ratio(walk2_left_img, image_width, image_height)
-walk1_right_img = resize_to_aspect_ratio(walk1_right_img, image_width, image_height)
-walk2_right_img = resize_to_aspect_ratio(walk2_right_img, image_width, image_height)
+screen_width, screen_height = 400, 400
+image_width, image_height = int(screen_width * 0.25), int(screen_height * 0.25)
+
+#images will be reinitialized to correct pngs later by change mood
+stand_img=pygame.image.load("pet_assets\stand.png")
+walk1_left_img = pygame.image.load("pet_assets\stand.png")
+walk2_left_img = pygame.image.load("pet_assets\stand.png")
+walk1_right_img =pygame.image.load("pet_assets\stand.png")
+walk2_right_img = pygame.image.load("pet_assets\stand.png")
+
+#switch walk cycle
+def change_mood(stand, walk1_left, walk2_left, walk1_right, walk2_right):   
+    global stand_img, walk1_left_img, walk2_left_img, walk1_right_img, walk2_right_img
+    stand_img = pygame.image.load(stand)
+    walk1_left_img = pygame.image.load(walk1_left)
+    walk2_left_img = pygame.image.load(walk2_left)
+    walk1_right_img = pygame.image.load(walk1_right)
+    walk2_right_img = pygame.image.load(walk2_right)
+
+    stand_img = resize_to_aspect_ratio(stand_img, image_width, image_height)
+    walk1_left_img = resize_to_aspect_ratio(walk1_left_img, image_width, image_height)
+    walk2_left_img = resize_to_aspect_ratio(walk2_left_img, image_width, image_height)
+    walk1_right_img = resize_to_aspect_ratio(walk1_right_img, image_width, image_height)
+    walk2_right_img = resize_to_aspect_ratio(walk2_right_img, image_width, image_height)
+
+pygame.init()
+
+change_mood("pet_assets/stand.png","pet_assets/walk1_left.png","pet_assets/walk2_left.png","pet_assets/walk1_right.png","pet_assets/walk2_right.png")
+pixel_font = pygame.font.Font("PressStart2P.ttf", 20)
 
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.NOFRAME)
 pygame.display.set_caption("Tamagotchi Anteater")
@@ -184,16 +195,8 @@ while running:
                 pygame.display.iconify()
                 threading.Thread(target=run_tray, daemon=True).start()
             if event.key == pygame.K_l:
-                stand_img = pygame.image.load("pet_assets/lebronhappy.png")
-                walk1_left_img = pygame.image.load("pet_assets/lebronhappy.png")
-                walk2_left_img = pygame.image.load("pet_assets/lebronhappy.png")
-                walk1_right_img = pygame.image.load("pet_assets/lebronhappy.png")
-                walk2_right_img = pygame.image.load("pet_assets/lebronhappy.png")
-                stand_img = resize_to_aspect_ratio(stand_img, image_width, image_height)
-                walk1_left_img = resize_to_aspect_ratio(walk1_left_img, image_width, image_height)
-                walk2_left_img = resize_to_aspect_ratio(walk2_left_img, image_width, image_height)
-                walk1_right_img = resize_to_aspect_ratio(walk1_right_img, image_width, image_height)
-                walk2_right_img = resize_to_aspect_ratio(walk2_right_img, image_width, image_height)
+                change_mood("pet_assets/lebronhappy.png","pet_assets/lebronhappy.png","pet_assets/lebronhappy.png","pet_assets/lebronhappy.png","pet_assets/lebronhappy.png")
+            
             if input_active:
                 if event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
