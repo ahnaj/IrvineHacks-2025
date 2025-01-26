@@ -2,6 +2,8 @@ import pickle
 import pyperclip
 import time
 
+import pygame
+
 from canvasapi import Canvas
 
 API_URL = "https://canvas.eee.uci.edu"
@@ -27,6 +29,16 @@ def get_username(token):
 def check_valid_token(token):
     return token.strip() and connect_to_canvas(token)
     
+def get_to_do_list(token): 
+    canvas = Canvas(API_URL, token)
+    todo = canvas.get_todo_items()
+    
+    todo_text = "To-Do List:\n\n"
+    for item in todo:
+        todo_text += f"- {item.assignment['name']}\n"
+
+    return todo_text
+
 def connect_to_canvas(api_key):
     canvas = Canvas(API_URL, api_key)
     try:

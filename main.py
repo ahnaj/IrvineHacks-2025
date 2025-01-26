@@ -1,6 +1,5 @@
 import pickle
 import pygame
-import pygame.newbuffer
 import pyperclip
 import random
 import threading
@@ -11,9 +10,13 @@ from Button import Button
 from TextLabel import TextLabel
 from Tray import *
 from Canvas import *
+from PopupWindow import PopupWindow
 
 pygame.init()
 clock = pygame.time.Clock()
+
+# Check to see if the user has already logged in 
+token = get_saved_token()
 
 def random_target():
     x = random.randint(0, 300)
@@ -39,7 +42,7 @@ def move_towards_target():
         if time.time() - last_image_switch_time > image_switch_delay:
             walk1_right_img, walk2_right_img = walk2_right_img, walk1_right_img
             last_image_switch_time = time.time()
-    
+
 def resize(img, width, height):
     img_rect = img.get_rect()
     aspect_ratio = img_rect.width / img_rect.height
@@ -73,7 +76,6 @@ walk2_left_img = resize(walk2_left_img, image_width, image_height)
 walk1_right_img = resize(walk1_right_img, image_width, image_height)
 walk2_right_img = resize(walk2_right_img, image_width, image_height)
 
-
 running = True
 minimized = False
 anteater_color = (150, 75, 0)
@@ -91,11 +93,12 @@ last_image_switch_time = time.time()
 
 buttons = [] 
 canvas_button = Button("Connect to Canvas", 200, 50, (screen_width // 2 - 200 // 2, screen_height // 2 - 50 // 2 - 100), 5, pygame.font.Font("PressStart2p.ttf", 8))
+todo_button = Button("To-Do", 50, 50, (screen_width - 50, 10), 5, pygame.font.Font("PressStart2p.ttf", 8))
 buttons.append(canvas_button)
+buttons.append(todo_button)
+
 texts = []
 
-# Check to see if the user has already logged in 
-token = get_saved_token()
 if not token == "":
     start_game()
 
@@ -106,10 +109,23 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_l:
+                stand_img = pygame.image.load("pet_assets/lebronhappy.png")
+                walk1_left_img = pygame.image.load("pet_assets/lebronhappy.png")
+                walk2_left_img = pygame.image.load("pet_assets/lebronhappy.png")
+                walk1_right_img = pygame.image.load("pet_assets/lebronhappy.png")
+                walk2_right_img = pygame.image.load("pet_assets/lebronhappy.png")
+                stand_img = resize(stand_img, image_width, image_height)
+                walk1_left_img = resize(walk1_left_img, image_width, image_height)
+                walk2_left_img = resize(walk2_left_img, image_width, image_height)
+                walk1_right_img = resize(walk1_right_img, image_width, image_height)
+                walk2_right_img = resize(walk2_right_img, image_width, image_height)
+            
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             canvas_button.check_click()
+            todo_button.check_click()
             if canvas_button.pressed:
                 if check_valid_token(token):
                     print("Token found. Proceeding with the game...")
@@ -122,6 +138,11 @@ while running:
                     write_token(token)
                     start_game()
                     print(f"Token received: {token}")
+            
+            if todo_button.pressed:
+                todo = get_to_do_list(token)
+                todo_popup = PopupWindow(screen, "Todo List", todo)
+                todo_popup.show()
 
     if time.time() - last_move_time > move_delay:
         move_towards_target()
@@ -140,12 +161,12 @@ while running:
             screen.blit(walk1_right_img, (pet_pos[0], pet_pos[1]))
         else:
             screen.blit(stand_img, (pet_pos[0], pet_pos[1]))
-            
+        
         for button in buttons:
             button.draw(screen)
             
         for text in texts:
-            text.draw(screen)
+            text.draw(screen)  
             
         pygame.display.flip()
 
