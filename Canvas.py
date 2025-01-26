@@ -2,6 +2,8 @@ import pickle
 import pyperclip
 import time
 
+import datetime
+
 import pygame
 
 from canvasapi import Canvas
@@ -33,9 +35,9 @@ def get_to_do_list(token):
     canvas = Canvas(API_URL, token)
     todo = canvas.get_todo_items()
     
-    todo_text = "To-Do List:\n\n"
+    todo_text = []
     for item in todo:
-        todo_text += f"- {item.assignment['name']}\n"
+        todo_text.append(f"- {item.assignment['name']}")
 
     return todo_text
 
